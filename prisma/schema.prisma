@@ -12,6 +12,7 @@ datasource db {
     // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
     // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
     url      = env("DATABASE_URL")
+    directUrl         = env("DIRECT_URL")
 }
 
 model Post {
@@ -19,7 +20,6 @@ model Post {
     name      String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-
     createdBy   User   @relation(fields: [createdById], references: [id])
     createdById String
 
@@ -62,6 +62,7 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    todo          Todo[]
     posts         Post[]
 }
 
@@ -72,3 +73,14 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
+model Todo {
+    id        String @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now())
+    text      String
+    done      Boolean @default(false)
+    user      User @relation(fields: [userId], references: [id])
+    userId    String 
+}
+ 
